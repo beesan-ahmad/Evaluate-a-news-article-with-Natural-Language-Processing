@@ -8,4 +8,4 @@ function validateUrl(url) {
     });
 }
 
-module.exports = validateUrl; // Export the function directly
+module.exports = {validateUrl}; // Export the function directly
