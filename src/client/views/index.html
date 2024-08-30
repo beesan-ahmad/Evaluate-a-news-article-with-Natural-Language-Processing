@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Evaluate News With NLP!!!</title>
+	
+	<!-- <link href="../styles/all-styles.scss" rel="stylesheet"> -->
+</head>
+
+<body>
+	<div id="loader" class="loader" style="display: none;"></div>
+	<header>
+		<h1>Natural language processing (NLP)</h1>
+	</header>
+	<main>
+		<form id="form-section">
+			<h2> Analyze Your Article</h2>
+			<input type="text" id="url" placeholder="Paste your article URL here..." />
+			<button id="analyze-btn"> Analyze </button>
+		</form>
+		<section id="results-section">
+			<h2>Analysis Outcomes</h2>
+			<p id="agreement"></p>
+			<p id="confidence"></p>
+			<p id="irony"></p>
+			<p id="score_tag"></p>
+			<p id="subjectivity"></p>
+		</section>
+	</main>
+	<footer>
+		<p>&copy; Beesan. All rights reserved.</p>
+	</footer>
+	<script>
+		if ('serviceWorker' in navigator) {
+			window.addEventListener('load', () => {
+				navigator.serviceWorker.register('/service-worker.js').then(registration => {
+					console.log('Service Worker registered with scope:', registration.scope);
+				}).catch(error => {
+					console.error('Service Worker registration failed:', error);
+				});
+			});
+		}
+	</script>
+</body>
+
+</html>
