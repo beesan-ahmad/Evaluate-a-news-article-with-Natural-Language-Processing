@@ -15,10 +15,10 @@ const plugins = [
         template: "./src/client/views/index.html",
         filename: "./index.html",
     }),
-    ...(isProduction ? [new WorkboxPlugin.GenerateSW({// Conditionally add the Workbox plugin for production
+    new WorkboxPlugin.GenerateSW({
         clientsClaim: true,
         skipWaiting: true,
-    })] : []),
+    }),
     new MiniCssExtractPlugin({
         filename: 'styles.css',
     }),
@@ -37,6 +37,7 @@ const plugins = [
 module.exports = {
     entry: './src/client/index.js',
     mode: 'production',
+    devtool: 'source-map',
     optimization: {
         minimize: true,
         minimizer: [

@@ -1,37 +1,42 @@
 const axios = require('axios');
-const { displayLoader, hideLoader } = require('./loader');
-const validateUrl = require('./isValidUrl');
+const { removeNullValues } = require('./removeNullValues.js');
+const { validateUrl } = require('./isValidUrl.js');
+const { displayLoader, hideLoader } = require('./loader.js');
 
-const handleSubmit = async (event) => {
+const apiEndpoint = 'http://localhost:3000/api';
+
+async function processForm(event) {
   event.preventDefault();
-  const url = document.getElementById('url').value;
-
-  if (!validateUrl(url)) {
-    document.getElementById('results-section').innerHTML = '<p>Invalid URL</p>';
-    return;
-  }
-
-  try {
+  const inputUrl = document.getElementById('url').value;
+  
+  if (validateUrl(inputUrl)) {
     displayLoader();
-    const response = await axios.post('http://localhost:3000/api', { url });
+    try {
+      const result = await axios.post(apiEndpoint, { url: inputUrl });
+      const responseData = result.data;
+      console.log('Received Data:', responseData);
 
-    if (response && response.data) {
-      renderResults(response.data);
-    } else {
-      throw new Error('No data received');
+      displayResults(responseData);
+    } catch (error) {
+      const errorMsg = error.response ? error.response.data.message : error.message;
+      document.getElementById('results-section').innerHTML = `<p>Error: ${errorMsg}</p>`;
+    } finally {
+      hideLoader();
     }
-  } catch (error) {
-    console.error('Error:', error);
-    document.getElementById('results-section').innerHTML = `<p>Error: ${error.message}</p>`;
-  } finally {
-    hideLoader();
+  } else {
+    document.getElementById('results-section').innerHTML = `<p>Please provide a valid URL.</p>`;
   }
-};
+}
 
-const renderResults = (data) => {
-  document.getElementById('agreement').textContent = `Agreement: ${data.agreement || 'N/A'}`;
-  document.getElementById('irony').textContent = `Irony: ${data.irony || 'N/A'}`;
-  document.getElementById('subjectivity').textContent = `Subjectivity: ${data.subjectivity || 'N/A'}`;
-};
+function displayResults(data) {
+  const sanitizedData = removeNullValues(data);
+  for (const [field, value] of Object.entries(sanitizedData)) {
+    const resultElement = document.getElementById(field);
+    if (resultElement) {
+      const formattedField = field.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+      resultElement.textContent = `${formattedField}: ${value || 'N/A'}`;
+    }
+  }
+}
 
-module.exports = { handleSubmit, renderResults };
+module.exports = { processForm, displayResults };
