@@ -12,7 +12,7 @@ The application provides light on the piece's subjectivity, irony, polarity, con
 3. Responsive Design: The UI is designed to be responsive, ensuring a seamless experience across different devices and screen sizes.
 4. Error Handling: The application includes robust error handling to manage issues such as invalid URLs and API request failures.
 
-# 4. Technologies: 
+# 4. Technologies
 1-  Web-server: Node.js 
 controls the management of requests and backend server functions.
 
@@ -49,16 +49,16 @@ https://github.com/beesan-ahmad/Evaluate-a-news-article-with-Natural-Language-Pr
  "API_KEY = your_api_key"
 
 5- Run the app
-. Run the application in development mode:
+1. Run the application in development mode:
   npm run build-dev
 
-. Run the application in production mode:
+2. Run the application in production mode:
   npm run build-prod
 
-. Start the server:
+3. Start the server:
   npm run start
 
-. Run testing
+4. Run testing
   npm run test    
 
 # 8. Usage
