@@ -3,40 +3,49 @@ const { removeNullValues } = require('./removeNullValues.js');
 const { validateUrl } = require('./isValidUrl.js');
 const { displayLoader, hideLoader } = require('./loader.js');
 
+// Define the API endpoint for requests
 const apiEndpoint = 'http://localhost:3000/api';
 
+// Main function to handle form submission
 async function processForm(event) {
-  event.preventDefault();
-  const inputUrl = document.getElementById('url').value;
-  
+  event.preventDefault(); // Prevent default form submission behavior
+  const inputUrl = document.getElementById('url').value.trim(); // Get and trim URL input
+
+  // Validate the URL input
   if (validateUrl(inputUrl)) {
-    displayLoader();
+    displayLoader(); // Show loader during the API request
     try {
+      // Make POST request to the API with the URL
       const result = await axios.post(apiEndpoint, { url: inputUrl });
       const responseData = result.data;
-      console.log('Received Data:', responseData);
 
+      // Process and display results from the API
       displayResults(responseData);
     } catch (error) {
+      // Handle errors from the API request
       const errorMsg = error.response ? error.response.data.message : error.message;
       document.getElementById('results-section').innerHTML = `<p>Error: ${errorMsg}</p>`;
     } finally {
-      hideLoader();
+      hideLoader(); // Hide loader after the request is complete
     }
   } else {
-    document.getElementById('results-section').innerHTML = `<p>Please provide a valid URL.</p>`;
+    // Display an error message if the URL is invalid
+    document.getElementById('results-section').innerHTML = `<p>Provide a valid URL pls!</p>`;
   }
 }
 
+// Function to display the results from the API
 function displayResults(data) {
-  const sanitizedData = removeNullValues(data);
+  const sanitizedData = removeNullValues(data); // Clean the data by removing null values
   for (const [field, value] of Object.entries(sanitizedData)) {
     const resultElement = document.getElementById(field);
     if (resultElement) {
+      // Format the field name for display
       const formattedField = field.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
       resultElement.textContent = `${formattedField}: ${value || 'N/A'}`;
     }
   }
 }
 
+// Export the functions for use in other modules
 module.exports = { processForm, displayResults };
