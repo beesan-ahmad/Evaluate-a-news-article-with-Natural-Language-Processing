@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { handleSubmit, renderResults } = require('../formHandler');
+const { processForm, displayResults } = require('../formHandler');
 const { validateUrl } = require('../isValidUrl');
 const { displayLoader } = require('../loader');
 
@@ -11,7 +11,7 @@ jest.mock('../loader', () => ({
   displayLoader: jest.fn(),
 }));
 
-describe('handleSubmit function', () => {
+describe('process Form function', () => {
   let mockEvent;
 
   // beforeEach(() => {
@@ -73,10 +73,10 @@ describe('handleSubmit function', () => {
   // });
 });
 
-describe('renderResults function', () => {
+describe('displayResults function', () => {
   beforeEach(() => {
     document.body.innerHTML = `
-      <div id="results-section">
+      <div id="results">
         <p id="agreement"></p>
         <p id="irony"></p>
         <p id="subjectivity"></p>
@@ -84,14 +84,14 @@ describe('renderResults function', () => {
     `;
   });
 
-  test('should correctly render the results in the DOM', () => {
+  test('should correctly display the results in the DOM', () => {
     const mockData = {
       agreement: 'AGREEMENT',
       irony: 'NO_IRONY',
       subjectivity: 'SUBJECTIVE',
     };
 
-    renderResults(mockData);
+    displayResults(mockData);
 
     expect(document.getElementById('agreement').textContent).toBe('Agreement: AGREEMENT');
     expect(document.getElementById('irony').textContent).toBe('Irony: NO_IRONY');
@@ -103,7 +103,7 @@ describe('renderResults function', () => {
       agreement: 'AGREEMENT',
     };
 
-    renderResults(mockData);
+    displayResults(mockData);
 
     expect(document.getElementById('agreement').textContent).toBe('Agreement: AGREEMENT');
     expect(document.getElementById('irony').textContent).toBe('Irony: N/A');

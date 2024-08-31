@@ -30,21 +30,23 @@ async function processForm(event) {
     }
   } else {
     // Display an error message if the URL is invalid
-    document.getElementById('results').innerHTML = `<p>Provide a valid URL pls!</p>`;
+    document.getElementById('results').innerHTML = `<p>Provide a valid URL please!</p>`;
   }
 }
 
 // Function to display the results from the API
 function displayResults(data) {
   const sanitizedData = removeNullValues(data); // Clean the data by removing null values
-  for (const [field, value] of Object.entries(sanitizedData)) {
+  const defaultText = 'N/A'; // Default text when data is missing
+  const resultFields = ['agreement', 'irony', 'subjectivity']; // Add any other fields you expect
+
+  resultFields.forEach(field => {
     const resultElement = document.getElementById(field);
     if (resultElement) {
-      // Format the field name for display
-      const formattedField = field.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
-      resultElement.textContent = `${formattedField}: ${value || 'Not Available'}`;
+      const formattedField = field.charAt(0).toUpperCase() + field.slice(1);
+      resultElement.textContent = `${formattedField}: ${sanitizedData[field] || defaultText}`;
     }
-  }
+  });
 }
 
 // Export the functions for use in other modules
