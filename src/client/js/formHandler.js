@@ -24,13 +24,13 @@ async function processForm(event) {
     } catch (error) {
       // Handle errors from the API request
       const errorMsg = error.response ? error.response.data.message : error.message;
-      document.getElementById('results-section').innerHTML = `<p>Error: ${errorMsg}</p>`;
+      document.getElementById('results').innerHTML = `<p>Error: ${errorMsg}</p>`;
     } finally {
       hideLoader(); // Hide loader after the request is complete
     }
   } else {
     // Display an error message if the URL is invalid
-    document.getElementById('results-section').innerHTML = `<p>Provide a valid URL pls!</p>`;
+    document.getElementById('results').innerHTML = `<p>Provide a valid URL pls!</p>`;
   }
 }
 
@@ -42,7 +42,7 @@ function displayResults(data) {
     if (resultElement) {
       // Format the field name for display
       const formattedField = field.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
-      resultElement.textContent = `${formattedField}: ${value || 'N/A'}`;
+      resultElement.textContent = `${formattedField}: ${value || 'Not Available'}`;
     }
   }
 }

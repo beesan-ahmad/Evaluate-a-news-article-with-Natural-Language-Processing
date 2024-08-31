@@ -5,23 +5,22 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Evaluate News With NLP!!!</title>
-	
-	<!-- <link href="../styles/all-styles.scss" rel="stylesheet"> -->
+
 </head>
 
 <body>
 	<div id="loader" class="loader" style="display: none;"></div>
 	<header>
-		<h1>Natural language processing (NLP)</h1>
+		<h2>Evaluate A News Article With Natural language processing (NLP)</h2>
 	</header>
 	<main>
-		<form id="form-section">
-			<h2> Analyze Your Article</h2>
-			<input type="text" id="url" placeholder="Paste your article URL here..." />
-			<button id="analyze-btn"> Analyze </button>
+		<form id="form">
+			<h2> To have an evaluate to your news article paste your URL in the box below
+			</h2>
+			<input type="text" id="url" placeholder="Put URL here:" />
+			<button id="evaluate"> Evaluate </button>
 		</form>
-		<section id="results-section">
-			<h2>Analysis Outcomes</h2>
+		<section id="results">
 			<p id="agreement"></p>
 			<p id="confidence"></p>
 			<p id="irony"></p>
@@ -30,7 +29,7 @@
 		</section>
 	</main>
 	<footer>
-		<p>&copy; Beesan. All rights reserved.</p>
+		<p>&copy;2024 Beesan Abu-Mfarreh. All rights reserved.</p>
 	</footer>
 	<script>
 		if ('serviceWorker' in navigator) {
