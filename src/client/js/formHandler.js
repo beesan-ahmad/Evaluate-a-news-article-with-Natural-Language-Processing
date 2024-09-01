@@ -1,3 +1,5 @@
+import { updateInterface } from "./updateInterface";
+
 export const processSubmission = async (event) => {
   event.preventDefault();
 
