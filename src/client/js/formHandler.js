@@ -1,53 +1,41 @@
-const axios = require('axios');
-const { removeNullValues } = require('./removeNullValues.js');
-const { validateUrl } = require('./isValidUrl.js');
-const { displayLoader, hideLoader } = require('./loader.js');
+export const processSubmission = async (event) => {
+  event.preventDefault();
 
-// Define the API endpoint for requests
-const apiEndpoint = 'http://localhost:3000/api';
+  const inputElement = document.getElementById('article-url');
+  if (!inputElement) {
+    console.error('Input element not found');
+    return;
+  }
 
-// Main function to handle form submission
-async function processForm(event) {
-  event.preventDefault(); // Prevent default form submission behavior
-  const inputUrl = document.getElementById('url').value.trim(); // Get and trim URL input
+  const inputUrl = inputElement.value.trim();
+  if (!inputUrl) {
+    console.error('Input URL is empty');
+    return;
+  }
 
-  // Validate the URL input
-  if (validateUrl(inputUrl)) {
-    displayLoader(); // Show loader during the API request
+  if (validateInputUrl(inputUrl)) {
     try {
-      // Make POST request to the API with the URL
-      const result = await axios.post(apiEndpoint, { url: inputUrl });
-      const responseData = result.data;
+      const response = await fetch('http://localhost:3000/api', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: inputUrl }),
+      });
 
-      // Process and display results from the API
-      displayResults(responseData);
+      const responseData = await response.json();
+      console.log('Response Data:', responseData); // Debugging line
+      updateInterface(responseData);
     } catch (error) {
-      // Handle errors from the API request
-      const errorMsg = error.response ? error.response.data.message : error.message;
-      document.getElementById('results').innerHTML = `<p>Error: ${errorMsg}</p>`;
-    } finally {
-      hideLoader(); // Hide loader after the request is complete
+      console.error('Error during submission:', error);
     }
   } else {
-    // Display an error message if the URL is invalid
-    document.getElementById('results').innerHTML = `<p>Provide a valid URL please!</p>`;
+    alert('Please enter a valid URL.');
   }
-}
+};
 
-// Function to display the results from the API
-function displayResults(data) {
-  const sanitizedData = removeNullValues(data); // Clean the data by removing null values
-  const defaultText = 'N/A'; // Default text when data is missing
-  const resultFields = ['agreement', 'irony', 'subjectivity']; // Add any other fields you expect
-
-  resultFields.forEach(field => {
-    const resultElement = document.getElementById(field);
-    if (resultElement) {
-      const formattedField = field.charAt(0).toUpperCase() + field.slice(1);
-      resultElement.textContent = `${formattedField}: ${sanitizedData[field] || defaultText}`;
-    }
-  });
-}
-
-// Export the functions for use in other modules
-module.exports = { processForm, displayResults };
+// Example URL validation function
+const validateInputUrl = (url) => {
+  const pattern = /^https?:\/\/[^\s/$.?#].[^\s]*$/i;
+  return pattern.test(url);
+};

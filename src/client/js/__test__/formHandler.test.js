@@ -1,112 +1,57 @@
-const axios = require('axios');
-const { processForm, displayResults } = require('../formHandler');
-const { validateUrl } = require('../isValidUrl');
-const { displayLoader } = require('../loader');
+import { processSubmission } from '../formHandler';
 
-jest.mock('axios');
-jest.mock('../isValidUrl', () => ({
-  validateUrl: jest.fn(),
-}));
-jest.mock('../loader', () => ({
-  displayLoader: jest.fn(),
-}));
-
-describe('process Form function', () => {
-  let mockEvent;
-
-  // beforeEach(() => {
-  //   document.body.innerHTML = `
-  //     <input type="text" id="url" value="https://example.com">
-  //     <div id="results-section"></div>
-  //   `;
-
-  //   mockEvent = {
-  //     preventDefault: jest.fn(),
-  //   };
-
-  //   // Reset the mocks before each test
-  //   validateUrl.mockReset();
-  //   displayLoader.mockReset();
-  //   axios.post.mockReset();
-  // });
-
-  // Comment out these test cases:
-  
-  // test('should call validateUrl and displayLoader when URL is valid', async () => {
-  //   validateUrl.mockImplementation(() => true);
-  //   axios.post.mockResolvedValue({
-  //     data: { agreement: 'AGREEMENT', irony: 'NO_IRONY', subjectivity: 'SUBJECTIVE' }
-  //   });
-
-  //   await handleSubmit(mockEvent);
-
-  //   expect(validateUrl).toHaveBeenCalledWith('https://example.com');
-  //   expect(displayLoader).toHaveBeenCalledWith(true);
-  //   expect(axios.post).toHaveBeenCalledWith('https://example.com/api', { url: 'https://example.com' });
-  //   expect(renderResults).toHaveBeenCalledWith({
-  //     agreement: 'AGREEMENT',
-  //     irony: 'NO_IRONY',
-  //     subjectivity: 'SUBJECTIVE'
-  //   });
-  //   expect(displayLoader).toHaveBeenCalledWith(false);
-  // });
-
-  // test('should handle an invalid URL and display an error', async () => {
-  //   validateUrl.mockImplementation(() => false);
-
-  //   await handleSubmit(mockEvent);
-
-  //   expect(validateUrl).toHaveBeenCalledWith('https://example.com');
-  //   expect(displayLoader).not.toHaveBeenCalled();
-  //   expect(axios.post).not.toHaveBeenCalled();
-  //   expect(document.getElementById('results-section').innerHTML).toContain('Error: Invalid URL');
-  // });
-
-  // test('should handle network error and display error message', async () => {
-  //   validateUrl.mockImplementation(() => true);
-  //   axios.post.mockRejectedValue(new Error('Network Error'));
-
-  //   await handleSubmit(mockEvent);
-
-  //   expect(axios.post).toHaveBeenCalledWith('https://example.com/api', { url: 'https://example.com' });
-  //   expect(document.getElementById('results-section').innerHTML).toContain('Error: Network Error');
-  // });
-});
-
-describe('displayResults function', () => {
+describe('processSubmission', () => {
   beforeEach(() => {
+    // Set up a basic HTML structure
     document.body.innerHTML = `
-      <div id="results">
-        <p id="agreement"></p>
-        <p id="irony"></p>
-        <p id="subjectivity"></p>
-      </div>
+      <form id="test-form">
+        <input id="article-url" type="text" value="https://example.com">
+        <div id="polarity"></div>
+        <div id="subjectivity"></div>
+        <div id="text"></div>
+      </form>
     `;
+
+    // Mock updateInterface function
+    global.updateInterface = jest.fn();
+
+    // Mock fetch to return a resolved promise
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue({
+        polarity: 'positive',
+        subjectivity: 'subjective',
+        text: 'Sample text',
+      }),
+    });
   });
 
-  test('should correctly display the results in the DOM', () => {
-    const mockData = {
-      agreement: 'AGREEMENT',
-      irony: 'NO_IRONY',
-      subjectivity: 'SUBJECTIVE',
-    };
-
-    displayResults(mockData);
-
-    expect(document.getElementById('agreement').textContent).toBe('Agreement: AGREEMENT');
-    expect(document.getElementById('irony').textContent).toBe('Irony: NO_IRONY');
-    expect(document.getElementById('subjectivity').textContent).toBe('Subjectivity: SUBJECTIVE');
+  afterEach(() => {
+    // Clean up mocks
+    jest.resetAllMocks();
   });
 
-  test('should handle missing data gracefully', () => {
-    const mockData = {
-      agreement: 'AGREEMENT',
-    };
-
-    displayResults(mockData);
-
-    expect(document.getElementById('agreement').textContent).toBe('Agreement: AGREEMENT');
-    expect(document.getElementById('irony').textContent).toBe('Irony: N/A');
-    expect(document.getElementById('subjectivity').textContent).toBe('Subjectivity: N/A');
+  test('It should be a function', () => {
+    expect(typeof processSubmission).toBe('function');
   });
+
+  test('It should prevent default form submission', () => {
+    const event = { preventDefault: jest.fn() };
+    processSubmission(event);
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
+
+  test('It should call updateInterface with the response data', async () => {
+    const event = { preventDefault: jest.fn() };
+    await processSubmission(event);
+
+    // Debugging line
+    console.log('updateInterface calls:', global.updateInterface.mock.calls);
+
+    expect(global.updateInterface).toHaveBeenCalledWith({
+      polarity: 'positive',
+      subjectivity: 'subjective',
+      text: 'Sample text',
+    });
+  });
+
 });

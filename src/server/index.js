@@ -26,38 +26,16 @@ app.get('/', (req, res) => {
 
 // POST Route
 app.post('/api', async (req, res) => {
-    const url = req.body.url;
-    // Validate input
-    if (!url) {
-        return res.status(400).json({ error: 'URL is required' });
-    }
+    const { url } = req.body;
 
     try {
-        // Make a request to the MeaningCloud API
-        const apiResponse = await axios.post('https://api.meaningcloud.com/sentiment-2.1', null, {
-            params: {
-                key: process.env.API_KEY,
-                txt: url,
-                lang: 'en' // Specify language
-            }
-        });
-
-        const { data } = apiResponse;
-
-        if (data.status.code === '0') {
-            res.json({
-                agreement: data.agreement || 'Not Available',
-                confidence: data.confidence || 'Not Available',
-                irony: data.irony || 'Not Available',
-                model: data.model || 'Not Available',
-                scoreTag: data.score_tag || 'Not Available',
-                subjectivity: data.subjectivity || 'Not Available',
-            });
-        } else {
-            res.status(400).json({ error: data.status.msg });
-        }
+        const apiKey = process.env.API_KEY;
+        const response = await fetch(`https://api.meaningcloud.com/sentiment-2.1?key=${apiKey}&url=${url}&lang=en`);
+        const data = await response.json();
+        res.send(data);
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while processing the request.' });
+        console.error('Error during API request:', error);
+        res.status(500).send('An error occurred while analyzing the article.');
     }
 });
 

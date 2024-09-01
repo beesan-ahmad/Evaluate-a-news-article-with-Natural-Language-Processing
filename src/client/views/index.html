@@ -2,35 +2,30 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Evaluate News With NLP!!!</title>
-
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Evaluate a News Article</title>
 </head>
 
 <body>
-	<div id="loader" class="loader" style="display: none;"></div>
 	<header>
-		<h2>Evaluate A News Article With Natural language processing (NLP)</h2>
+		<h1>Evaluate a News Article</h1>
 	</header>
 	<main>
-		<form id="form">
-			<h2> To have an evaluate to your news article paste your URL in the box below
-			</h2>
-			<input type="text" id="url" placeholder="Put URL here:" />
-			<button id="evaluate"> Evaluate </button>
+		<form id="analyze-form">
+			<label for="article-url">Enter the article URL:</label>
+			<input type="text" id="article-url" name="article-url" required>
+			<button type="submit">Evaluate</button>
 		</form>
+
 		<section id="results">
-			<p id="agreement"></p>
-			<p id="confidence"></p>
-			<p id="irony"></p>
-			<p id="score_tag"></p>
+			<h2>Analysis Results:</h2>
+			<p id="polarity"></p>
 			<p id="subjectivity"></p>
+			<p id="text"></p>
 		</section>
 	</main>
-	<footer>
-		<p>&copy;2024 Beesan Abu-Mfarreh. All rights reserved.</p>
-	</footer>
+	<!-- <script src="../js/index.js"></script> -->
 	<script>
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', () => {
@@ -42,6 +37,7 @@
 			});
 		}
 	</script>
+
 </body>
 
 </html>
